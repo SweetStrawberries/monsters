@@ -1,22 +1,60 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>Отображение изображения с помощью canvas</title>
+<title>Отображение состояний</title>
 <canvas width="64" height="64"></canvas>
 <script>
-//1.Создание ссылки на элемент canvas
-var canvas = document.querySelector("canvas");
-//2.Создание ссылки на поверхность рисования элемента canvas
-var drawingSurface = canvas.getContext("2d");
-//3.Создание переменной для нового объекта изображения
-var monsterImage = new Image();
-//4.Подключение механизма отслеживания события завершения
-//загрузки изображения для вызова функции его отображения
-monsterImage.addEventListener("load", imageLoadHandler, false);
-//5.Задание атрибута src для объекта с загружаемым изображением
-monsterImage.src = "monsterStates.png";
-function imageLoadHandler()
+var monster =
 {
- //6.Отображение monsterImage на холсте
- drawingSurface.drawImage(monsterImage, 0, 0);
+ //Изображение монстра
+image: "monsterStates.png",
+//Состояния монстра
+ NORMAL: 0,
+ SCARED: 1,
+ //Установка начального состояния
+ state: 0
+};
+//Установка холста и поверхности рисования
+var canvas = document.querySelector("canvas");
+var drawingSurface = canvas.getContext("2d");
+//Загрузка изображения монстра
+var monsterImage = new Image();
+monsterImage.addEventListener("load", render, false);
+monsterImage.src = monster.image;
+//Смена состояния монстра при нажатии и отпускании клавиши
+window.addEventListener("keydown", keydownHandler, false);
+window.addEventListener("keyup", keyupHandler, false);
+function keydownHandler(event)
+{
+ //При нажатии клавиши, переход в состояние SCARED
+ monster.state = monster.SCARED;
+ render();
+}
+function keyupHandler(event)
+{
+ //При отпускании клавиши, переход в состояние NORMAL
+ monster.state = monster.NORMAL;
+ render();
+}
+ function render()
+{
+ //Отображение состояния монстра
+ switch(monster.state)
+ {
+ case monster.NORMAL:
+ drawingSurface.drawImage(monsterImage,
+ 0, 0, 64, 64,
+ 0, 0, 64, 64);
+ break;
+ case monster.SCARED:
+ drawingSurface.drawImage(monsterImage,
+ 64, 0, 64, 64,
+ 0, 0, 64, 64);
+ }
+ //Улучшенный код функции render
+ /*
+ drawingSurface.drawImage(monsterImage,
+ 64 * monster.state, 0, 64, 64,
+ 0, 0, 64, 64);
+ */
 }
 </script>
